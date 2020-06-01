@@ -1,7 +1,7 @@
 //  Import express
-const express = require('express');
+const express = require("express");
 //  Import shortid
-const shortid = require('shortid');
+const shortid = require("shortid");
 
 //  creating the server
 const server = express();
@@ -10,27 +10,40 @@ const server = express();
 server.use(express.json()); // parsing JSON from  the body
 
 //  function to handle GET '/'
-server.get('/', (req, res) => {
+server.get("/", (req, res) => {
     res.status(200).json(`Hey there, welcome to port ${port}`);
 });
 
 //  list of users
 let users = [
     {
-        id: 'a_unique_id', // hint: use the shortid npm package to generate it
-        name: 'Jane Doe', // String, required
+        id: "a_unique_id", // hint: use the shortid npm package to generate it
+        name: "Jane Doe", // String, required
         bio: "Not Tarzan's Wife, another Jane", // String, required
     },
 ];
 //  function to handle GET '/api/users'
-server.get('/api/users', (req, res) => {
+server.get("/api/users", (req, res) => {
     res.status(200).json(users);
 });
 //function to handle POST '/api/users'
-server.post('/api/users', (req, res) => {
+server.post("/api/users", (req, res) => {
     const user = req.body;
-    users.push(user);
-    res.status(201).json(users);
+
+    if (user.name === undefined || user.bio === undefined) {
+        res.status(500).json({
+            errorMessage:
+                "There was an error while saving the user to the database",
+        });
+    } else if (user.name) {
+        user.id = shortid.generate();
+        users.push(user);
+        res.status(201).json(users);
+    } else if (user.name == "" || user.bio == "") {
+        res.status(400).json({
+            errorMessage: "Please provide name and / or bio for the user.",
+        });
+    }
 });
 
 //  setting up the port

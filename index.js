@@ -53,7 +53,6 @@ server.post("/api/users", (req, res) => {
 
 //  function to handle GET to '/api/users/:id
 server.get("/api/users/:id", (req, res) => {
-    let id = req.params.id;
     const selectedUser = users.filter((user) => {
         if (user.id === req.params.id) {
             return user;
@@ -71,6 +70,14 @@ server.get("/api/users/:id", (req, res) => {
             errorMessage: "The user information could not be retrieved.",
         });
     }
+});
+
+//  function to handle DELETE to '/api/users/:id'
+server.delete("/api/users/:id", (req, res) => {
+    const delUser = users.filter((user) => {
+        user.id === req.params.id;
+    });
+    res.status(200).json({ delUser });
 });
 
 //  setting up the port

@@ -1,5 +1,7 @@
 //  Import express
 const express = require('express');
+//  Import shortid
+const shortid = require('shortid');
 
 //  creating the server
 const server = express();
@@ -8,8 +10,8 @@ const server = express();
 server.use(express.json()); // parsing JSON from  the body
 
 //  function to handle GET '/'
-server.get('/', (res, req) => {
-    res.statusCode(200).json(`Hey there, welcome to port ${port}`);
+server.get('/', (req, res) => {
+    res.status(200).json(`Hey there, welcome to port ${port}`);
 });
 
 //  list of users
@@ -20,13 +22,12 @@ let users = [
         bio: "Not Tarzan's Wife, another Jane", // String, required
     },
 ];
-
 //  function to handle GET '/api/users'
-server.get('/api/users', (res, req) => {
+server.get('/api/users', (req, res) => {
     res.status(200).json(users);
 });
 //function to handle POST '/api/users'
-server.post('/api/users', (res, req) => {
+server.post('/api/users', (req, res) => {
     const user = req.body;
     users.push(user);
     res.status(201).json(users);

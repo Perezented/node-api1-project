@@ -21,6 +21,16 @@ let users = [
         name: "Jane Doe", // String, required
         bio: "Not Tarzan's Wife, another Jane", // String, required
     },
+    {
+        id: "2", // hint: use the shortid npm package to generate it
+        name: "Jane Doe3", // String, required
+        bio: "bio2", // String, required
+    },
+    {
+        id: "3", // hint: use the shortid npm package to generate it
+        name: "Jane Doe2", // String, required
+        bio: "bio3", // String, required
+    },
 ];
 //  function to handle GET '/api/users'
 server.get("/api/users", (req, res) => {
@@ -75,9 +85,11 @@ server.get("/api/users/:id", (req, res) => {
 //  function to handle DELETE to '/api/users/:id'
 server.delete("/api/users/:id", (req, res) => {
     const delUser = users.filter((user) => {
-        user.id === req.params.id;
+        if (user.id === req.params.id) {
+            return !user;
+        } else return user;
     });
-    res.status(200).json({ delUser });
+    res.status(200).json(delUser);
 });
 
 //  setting up the port

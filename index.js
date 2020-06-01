@@ -2,7 +2,7 @@
 const express = require("express");
 //  Import shortid
 const shortid = require("shortid");
-
+// shortid.characters("1234567890");
 //  creating the server
 const server = express();
 
@@ -17,19 +17,24 @@ server.get("/", (req, res) => {
 //  list of users
 let users = [
     {
-        id: "a_unique_id", // hint: use the shortid npm package to generate it
+        id: "1", // hint: use the shortid npm package to generate it
         name: "Jane Doe", // String, required
         bio: "Not Tarzan's Wife, another Jane", // String, required
     },
 ];
 //  function to handle GET '/api/users'
 server.get("/api/users", (req, res) => {
-    res.status(200).json(users);
+    if (users) {
+        res.status(200).json(users);
+    } else {
+        res.status(500).json({
+            errorMessage: "The users information could not be retrieved.",
+        });
+    }
 });
 //function to handle POST '/api/users'
 server.post("/api/users", (req, res) => {
     const user = req.body;
-
     if (user.name === undefined || user.bio === undefined) {
         res.status(500).json({
             errorMessage:
@@ -46,8 +51,22 @@ server.post("/api/users", (req, res) => {
     }
 });
 
+//  function to handle GET to '/api/users/:id
+server.get("/api/users/:id", (req, res) => {
+    let id = req.params.id;
+    const selectedUser = users.map((user) => {
+        if (user.id === req.params.id) {
+            return user;
+        }
+    });
+    if (selectedUser.name) {
+        res.status(200).json({ selectedUser });
+    } else res.status(404).json({ message: "no one found" });
+});
+
 //  setting up the port
 const port = 9000;
 server.listen(port, () => {
     console.log(`server port ${port} is listening`);
+    console.log(users);
 });

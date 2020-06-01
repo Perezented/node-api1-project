@@ -54,14 +54,23 @@ server.post("/api/users", (req, res) => {
 //  function to handle GET to '/api/users/:id
 server.get("/api/users/:id", (req, res) => {
     let id = req.params.id;
-    const selectedUser = users.map((user) => {
+    const selectedUser = users.filter((user) => {
         if (user.id === req.params.id) {
             return user;
         }
     });
-    if (selectedUser.name) {
-        res.status(200).json({ selectedUser });
-    } else res.status(404).json({ message: "no one found" });
+    if (selectedUser.length > 0) {
+        console.log(selectedUser);
+        res.status(200).json(selectedUser);
+    } else if (!selectedUser.name) {
+        res.status(404).json({
+            message: "The user with the specified ID does not exist.",
+        });
+    } else {
+        res.status(500).json({
+            errorMessage: "The user information could not be retrieved.",
+        });
+    }
 });
 
 //  setting up the port

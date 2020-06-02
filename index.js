@@ -84,20 +84,18 @@ server.get("/api/users/:id", (req, res) => {
 
 //  function to handle DELETE to '/api/users/:id'
 server.delete("/api/users/:id", (req, res) => {
-    const deleteUser = users.filter((user) => {
-        if (user.id !== req.params.id) {
-            return res.status(404).json({
-                message: "The user with the specified ID does not exist.",
+    users.filter((value, i, a) => {
+        if (value.id !== req.params.id) {
+            res.status(404).json({ message: "not a working id" });
+        } else if (value.id === req.params.id) {
+            const temp = a.filter((item) => {
+                if (item.id === req.params.id) {
+                    return !item;
+                } else return item;
             });
+            res.status(200).json(temp);
         }
     });
-
-    // const delUser = users.filter((user) => {
-    //     if (user.id === req.params.id) {
-    //         return !user;
-    //     } else return user;
-    // });
-    // res.status(200).json(delUser);
 });
 
 //  setting up the port

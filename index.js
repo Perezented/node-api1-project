@@ -91,8 +91,41 @@ server.delete("/api/users/:id", (req, res) => {
     });
 
     if (delUser.length === 1) {
-        res.status(200).json(delUser);
+        res.status(204).json(delUser);
     } else return res.status(404).json({ message: "did not find" });
+});
+
+//  function to handle PUT to '/api/users/:id'
+server.put("/api/users/:id", (req, res) => {
+    let sendUser = req.body;
+    const selectedUser = users.filter((user) => {
+        if (user.id === req.params.id) {
+            return user;
+        } else return null;
+    });
+    const allButSelected = users.filter((user) => {
+        if (user.id !== req.params.id) {
+            return user;
+        }
+    });
+    if (!sendUser.name || !sendUser.bio) {
+        res.status(400).json({
+            errorMessage:
+                "Please include the users name and bio in your request",
+        });
+    } else if (selectedUser.length === 0) {
+        res.status(404).json({
+            errorMessage: "the user with the specified id does not exist",
+        });
+    } else {
+        sendUser = {
+            id: req.params.id,
+            name: sendUser.name,
+            bio: sendUser.bio,
+        };
+        allButSelected.push(sendUser);
+        res.status(200).json(allButSelected);
+    }
 });
 
 //  setting up the port
